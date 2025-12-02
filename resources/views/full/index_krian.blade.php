@@ -2333,16 +2333,29 @@
                     // console.log(data);
                     ws.onmessage = function(e) {
                         var data = JSON.parse(e.data);
-                        sv.storeValue("@controller", parseFloat(data.controller));
-                        sv.storeValue("@BG1Stat", parseFloat(data.bg1stat));
-                        sv.storeValue("@Weight", parseFloat(data.weight));
-                        sv.storeValue("@BG2Stat", parseFloat(data.bg2stat));
-                        sv.storeValue("@Sensor1", parseFloat(data.sensor1));
-                        sv.storeValue("@Sensor2", parseFloat(data.sensor2));
-                        sv.storeValue("@Sensor3", parseFloat(data.sensor3));
-                        sv.storeValue("@Sensor4", parseFloat(data.sensor4));
-                        sv.storeValue("@gandeng", parseFloat(data.gandeng));
-                        sv.storeValue("@manuver", parseFloat(data.manuver));
+                        sv.storeValue("$plcconnection", parseFloat(data.plcconnection));
+                        sv.storeValue("$wbnumber", parseFloat(data.wbnumber));
+                        sv.storeValue("$berat", parseFloat(data.berat));
+                        sv.storeValue("$limitclosebg1", parseFloat(data.limitclose));
+                        sv.storeValue("$sensor1bg1", parseFloat(data.sensor1));
+                        sv.storeValue("$sensor2bg1", parseFloat(data.sensor2));
+                        sv.storeValue("$truckbg1", parseFloat(data.truck));
+                        sv.storeValue("$warningbg1", parseFloat(data.warning));
+                        sv.storeValue("$outbg1", parseFloat(data.out));
+                        sv.storeValue("$opennormalbg1", parseFloat(data.opennormal));
+                        sv.storeValue("$openbypassbg1", parseFloat(data.openbypass));
+                        sv.storeValue("$openterabg1", parseFloat(data.opentera));
+                        sv.storeValue("$forceclosebg1", parseFloat(data.forceclose));
+                        sv.storeValue("$limitclosebg2", parseFloat(data.limitclose));
+                        sv.storeValue("$sensor1bg2", parseFloat(data.sensor1));
+                        sv.storeValue("$sensor2bg2", parseFloat(data.sensor2));
+                        sv.storeValue("$truckbg2", parseFloat(data.truck));
+                        sv.storeValue("$warningbg2", parseFloat(data.warning));
+                        sv.storeValue("$outbg2", parseFloat(data.out));
+                        sv.storeValue("$opennormalbg2", parseFloat(data.opennormal));
+                        sv.storeValue("$openbypassbg2", parseFloat(data.openbypass));
+                        sv.storeValue("$openterabg2", parseFloat(data.opentera));
+                        sv.storeValue("$forceclosebg2", parseFloat(data.forceclose));
                         sv.updateValues();
                     }
 

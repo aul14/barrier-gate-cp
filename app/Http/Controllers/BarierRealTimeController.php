@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\LogApiSap;
 use App\Models\RealBarier;
 use App\Models\TrackStatus;
 use Illuminate\Http\Request;
@@ -9,13 +10,12 @@ use App\Models\LogBarierGate;
 use Illuminate\Http\Response;
 use App\Helpers\CodeNumbering;
 use App\Events\BarierGateEvent;
-use App\Models\LogApiSap;
 use App\Models\TokenBarrierGate;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Database\QueryException;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class BarierRealTimeController extends Controller
@@ -44,7 +44,7 @@ class BarierRealTimeController extends Controller
             if ($validator->fails()) {
                 return response()->json([
                     'status' => 'error',
-                    'message'   => $validator->messages(),
+                    'message'   => $validator->messages()->first(),
                 ], Response::HTTP_BAD_REQUEST);
             }
 
@@ -160,7 +160,7 @@ class BarierRealTimeController extends Controller
             if ($validator->fails()) {
                 return response()->json([
                     'status' => 'error',
-                    'message'   => $validator->messages(),
+                    'message'   => $validator->messages()->first(),
                 ], Response::HTTP_BAD_REQUEST);
             }
 
@@ -450,7 +450,7 @@ class BarierRealTimeController extends Controller
             if ($validator->fails()) {
                 return response()->json([
                     'status' => 'error',
-                    'message'   => $validator->messages(),
+                    'message'   => $validator->messages()->first(),
                 ], Response::HTTP_BAD_REQUEST);
             }
 
