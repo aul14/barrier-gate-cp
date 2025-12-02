@@ -60,10 +60,10 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1"
-     inkscape:cx="504.00566"
+     inkscape:cx="612.74056"
      inkscape:cy="126.41025"
      inkscape:document-units="mm"
-     inkscape:current-layer="layer5"
+     inkscape:current-layer="g3489-81-1"
      showgrid="false"
      showguides="true"
      inkscape:guide-bbox="true"
@@ -86,7 +86,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -657,7 +657,7 @@
                id="tspan1240-1"
                sodipodi:role="line">Alarm</tspan></text>
           <rect
-             inkscape:label="{&quot;attr&quot;:&quot;color&quot;,&quot;list&quot;:[{&quot;data&quot;:&quot;0&quot;,&quot;param&quot;:&quot;gray|black&quot;,&quot;tag&quot;:&quot;$alarmbg1&quot;},{&quot;data&quot;:&quot;1&quot;,&quot;param&quot;:&quot;red|black&quot;,&quot;tag&quot;:&quot;$alarmbg1&quot;}]}"
+             inkscape:label="{&quot;attr&quot;:&quot;color&quot;,&quot;list&quot;:[{&quot;data&quot;:&quot;0&quot;,&quot;param&quot;:&quot;gray|black&quot;,&quot;tag&quot;:&quot;$alarmOutbg1&quot;},{&quot;data&quot;:&quot;1&quot;,&quot;param&quot;:&quot;red|black&quot;,&quot;tag&quot;:&quot;$alarmOutbg1&quot;}]}"
              ry="0.53234804"
              y="248.81624"
              x="227.25404"
@@ -666,7 +666,7 @@
              id="rect3461-2"
              style="opacity:0.97000002;fill:#ff0000;fill-opacity:1;stroke:#0a0606;stroke-width:1.11701512;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.9974026" />
           <text
-             inkscape:label="{&quot;attr&quot;:&quot;text&quot;,&quot;map&quot;:[&quot;0=OFF&quot;,&quot;1=ON&quot;],&quot;tag&quot;:&quot;$alarmbg1&quot;}"
+             inkscape:label="{&quot;attr&quot;:&quot;text&quot;,&quot;map&quot;:[&quot;0=OFF&quot;,&quot;1=ON&quot;],&quot;tag&quot;:&quot;$alarmOutbg1&quot;}"
              transform="scale(1.0051021,0.9949238)"
              id="text1242-1-4"
              y="255.86034"
@@ -1231,7 +1231,7 @@
                id="tspan1240-1-5"
                sodipodi:role="line">Alarm</tspan></text>
           <rect
-             inkscape:label="{&quot;attr&quot;:&quot;color&quot;,&quot;list&quot;:[{&quot;data&quot;:&quot;0&quot;,&quot;param&quot;:&quot;gray|black&quot;,&quot;tag&quot;:&quot;$alarmbg2&quot;},{&quot;data&quot;:&quot;1&quot;,&quot;param&quot;:&quot;red|black&quot;,&quot;tag&quot;:&quot;$alarmbg2&quot;}]}"
+             inkscape:label="{&quot;attr&quot;:&quot;color&quot;,&quot;list&quot;:[{&quot;data&quot;:&quot;0&quot;,&quot;param&quot;:&quot;gray|black&quot;,&quot;tag&quot;:&quot;$alarmOutbg2&quot;},{&quot;data&quot;:&quot;1&quot;,&quot;param&quot;:&quot;red|black&quot;,&quot;tag&quot;:&quot;$alarmOutbg2&quot;}]}"
              ry="0.53234804"
              y="248.81624"
              x="227.25404"
@@ -1240,7 +1240,7 @@
              id="rect3461-2-5"
              style="opacity:0.97000002;fill:#ff0000;fill-opacity:1;stroke:#0a0606;stroke-width:1.11701512;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.9974026" />
           <text
-             inkscape:label="{&quot;attr&quot;:&quot;text&quot;,&quot;map&quot;:[&quot;0=OFF&quot;,&quot;1=ON&quot;],&quot;tag&quot;:&quot;$alarmbg2&quot;}"
+             inkscape:label="{&quot;attr&quot;:&quot;text&quot;,&quot;map&quot;:[&quot;0=OFF&quot;,&quot;1=ON&quot;],&quot;tag&quot;:&quot;$alarmOutbg2&quot;}"
              transform="scale(1.0051021,0.9949238)"
              id="text1242-1-4-9"
              y="255.86034"
