@@ -2335,13 +2335,14 @@
                         var data = JSON.parse(e.data);
                         sv.storeValue("$plcconnection", parseFloat(data.plcconnection));
                         sv.storeValue("$wbnumber", parseFloat(data.wbnumber));
-                        sv.storeValue("$berat", parseFloat(data.berat));
+                        sv.storeValue("$berat", parseFloat(data.weight));
                         sv.storeValue("$limitclosebg1", parseFloat(data.bg1.limitclose));
                         sv.storeValue("$sensor1bg1", parseFloat(data.bg1.sensor1));
                         sv.storeValue("$sensor2bg1", parseFloat(data.bg1.sensor2));
                         sv.storeValue("$truckbg1", parseFloat(data.bg1.truck));
                         sv.storeValue("$warningbg1", parseFloat(data.bg1.warning));
                         sv.storeValue("$outbg1", parseFloat(data.bg1.out));
+                        sv.storeValue("$alarmOutbg1", parseFloat(data.bg1.alarmOut));
                         sv.storeValue("$opennormalbg1", parseFloat(data.bg1.opennormal));
                         sv.storeValue("$openbypassbg1", parseFloat(data.bg1.openbypass));
                         sv.storeValue("$openterabg1", parseFloat(data.bg1.opentera));
@@ -2352,6 +2353,7 @@
                         sv.storeValue("$truckbg2", parseFloat(data.bg2.truck));
                         sv.storeValue("$warningbg2", parseFloat(data.bg2.warning));
                         sv.storeValue("$outbg2", parseFloat(data.bg2.out));
+                        sv.storeValue("$alarmOutbg2", parseFloat(data.bg2.alarmOut));
                         sv.storeValue("$opennormalbg2", parseFloat(data.bg2.opennormal));
                         sv.storeValue("$openbypassbg2", parseFloat(data.bg2.openbypass));
                         sv.storeValue("$openterabg2", parseFloat(data.bg2.opentera));
