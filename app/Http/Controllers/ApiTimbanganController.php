@@ -85,8 +85,9 @@ class ApiTimbanganController extends Controller
                     $response = Http::post("{$api_url}?WB={$wb}", [
                         "open" => $open_gate,
                         "close" => $close_gate,
-                        "gandeng" => ($wb_condition == "short") ? 1 : 0,
-                        "manuver" => ($wb_condition == "long") ? 1 : 0
+                        "mode" => ($wb_condition == "short" ? 'openbypass' : ($wb_condition == "long" ? 'teramode' : ($close_gate ? 'forceclose' : 'opennormal'))),
+                        // "gandeng" => ($wb_condition == "short") ? 1 : 0,
+                        // "manuver" => ($wb_condition == "long") ? 1 : 0
                     ]);
 
                     $data = $response->body();
@@ -250,8 +251,9 @@ class ApiTimbanganController extends Controller
                     $response = Http::post("{$api_url}?WB={$wb}", [
                         "open" => $open_gate,
                         "close" => $close_gate,
-                        "gandeng" => ($wb_condition == "short") ? 1 : 0,
-                        "manuver" => ($wb_condition == "long") ? 1 : 0
+                        "mode" => ($wb_condition == "short" ? 'openbypass' : ($wb_condition == "long" ? 'teramode' : ($close_gate ? 'forceclose' : 'opennormal'))),
+                        // "gandeng" => ($wb_condition == "short") ? 1 : 0,
+                        // "manuver" => ($wb_condition == "long") ? 1 : 0
                     ]);
 
                     $data = $response->body();
