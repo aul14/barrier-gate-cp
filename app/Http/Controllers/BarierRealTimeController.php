@@ -629,8 +629,14 @@ class BarierRealTimeController extends Controller
                                     Http::post("{$api_url}?WB={$wb}", [
                                         "open" => $open_gate,
                                         "close" => $close_gate,
-                                        "gandeng" => ($wb_condition == "short") ? 1 : 0,
-                                        "manuver" => ($wb_condition == "long") ? 1 : 0,
+                                        "mode" => ($wb_condition == "short" ? 'openbypass' : ($wb_condition == "long" ? 'teramode' : ($close_gate ? 'forceclose' : 'opennormal'))),
+                                        // "gandeng" => ($wb_condition == "short") ? 1
+                                        //     /** openbypass */
+                                        //     : 0,
+                                        // "manuver" => ($wb_condition == "long") ? 1
+                                        //     /** teramode */
+                                        //     /** jika close modenya forceclose selain itu open normal */
+                                        //     : 0,
                                         "save" => $direction == 'manuver' && $wb_condition == "long" ? true : false,
                                         "manuver1862" => $direction == 'manuver1862' && $wb_condition == "short" ? true : false,
                                     ]);
@@ -854,8 +860,7 @@ class BarierRealTimeController extends Controller
                                     Http::post("{$api_url}?WB={$wb}", [
                                         "open" => $open_gate,
                                         "close" => $close_gate,
-                                        "gandeng" => ($wb_condition == "short") ? 1 : 0,
-                                        "manuver" => ($wb_condition == "long") ? 1 : 0,
+                                        "mode" => ($wb_condition == "short" ? 'openbypass' : ($wb_condition == "long" ? 'teramode' : ($close_gate ? 'forceclose' : 'opennormal'))),
                                         "save" => $direction == 'manuver' && $wb_condition == "long" ? true : false,
                                         "manuver1862" => $direction == 'manuver1862' && $wb_condition == "short" ? true : false,
                                     ]);
