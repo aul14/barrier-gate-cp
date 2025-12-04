@@ -38,6 +38,7 @@ Route::post('/api_cpi/delete', [BarierRealTimeController::class, 'destroy'])->na
 Route::get('/api_cpi/status', [BarierRealTimeController::class, 'status']);
 Route::post('/api_cpi', [BarierRealTimeController::class, 'timbangan'])->name('api_cpi.timbangan');
 Route::post('/api_cpi/regis_token', [BarierRealTimeController::class, 'update_token']);
+Route::post('/api_cpi/add_log_sensor', [LogBarierGateController::class, 'add_log_sensor']);
 Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']);
 
 Route::post('logout', [LoginController::class, 'logout'])->name('logout');

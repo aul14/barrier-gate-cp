@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use PDF;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\LogBarierGate;
-use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
-use PDF;
+use App\Models\LogSensor;
 use Yajra\DataTables\DataTables;
+use Illuminate\Support\Facades\Validator;
+use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 class LogBarierGateController extends Controller
 {
@@ -95,5 +97,35 @@ class LogBarierGateController extends Controller
             return $pdf->setPaper('a4', 'landscape')->download('log-list.pdf');
         }
         return view('log.index', compact('date_start', 'date_end'));
+    }
+
+    public function add_log_sensor(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'created_date' => 'required|date|date_format:Y-m-d H:i:s',
+                'description' => 'nullable|string',
+                'wb_number' => 'required|string|in:BG1,BG2,BG3,BG4'
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $validator->errors()
+                ], 422);
+            }
+
+            $data = LogSensor::create($validator->validated());
+            return response()->json([
+                'status' => true,
+                'message' => 'Log Sensor created',
+                'data' => $data
+            ], 201);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success' => false,
+                'message' => $th->getMessage()
+            ]);
+        }
     }
 }
