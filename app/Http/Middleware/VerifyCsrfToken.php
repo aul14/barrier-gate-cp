@@ -16,6 +16,7 @@ class VerifyCsrfToken extends Middleware
         'api_cpi/status',
         'api_cpi/registrasi',
         'api_cpi/regis_token',
-        'api_cpi/delete'
+        'api_cpi/delete',
+        'api_cpi/add_log_sensor'
     ];
 }
