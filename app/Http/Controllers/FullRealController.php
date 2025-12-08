@@ -73,7 +73,7 @@ class FullRealController extends Controller
             $totals = RealBarier::whereDate('created_at', today())
                 ->select('next_status', DB::raw('COUNT(*) as total'))
                 ->groupBy('next_status')
-                ->pluck('total', 'next_status');
+                ->pluck('total', 'status');
 
             $registration = $totals['registration'] ?? 0;
             $on_process   = $totals['on process'] ?? 0;
