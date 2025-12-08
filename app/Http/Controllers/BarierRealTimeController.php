@@ -439,8 +439,9 @@ class BarierRealTimeController extends Controller
         $log_sap->json_sap = $body_sap;
         $log_sap->save();
 
-        DB::beginTransaction();
         try {
+            DB::beginTransaction();
+
             $validator = Validator::make($request->all(), [
                 'plant'     => 'required',
                 'sequence'       => 'required',
@@ -448,6 +449,8 @@ class BarierRealTimeController extends Controller
             ]);
 
             if ($validator->fails()) {
+                DB::rollBack();
+
                 return response()->json([
                     'status' => 'error',
                     'message'   => $validator->messages()->first(),
@@ -459,6 +462,53 @@ class BarierRealTimeController extends Controller
             if (!empty($wb) || !empty($wb_condition) || !empty($open_gate) || !empty($close_gate)) {
                 if ($cek_rb) {
                     if (!empty($next_status)) {
+
+                        // CEK TOKEN
+                        if (!$token) {
+                            DB::rollback();
+                            return response()->json([
+                                'status' => 'error',
+                                'message'   => "Token has not been registered, please register the token first",
+                            ], 422);
+                        }
+
+                        $get_token = TokenBarrierGate::first();
+                        if (!$get_token) {
+                            DB::rollback();
+                            return response()->json([
+                                'status' => 'error',
+                                'message'   => "Token has not been registered, please register the token first",
+                            ], 422);
+                        }
+
+                        $cek_token = Hash::check($token, $get_token->token);
+                        if (!$cek_token) {
+                            DB::rollback();
+                            return response()->json([
+                                'status' => 'error',
+                                'message'   => "Token is invalid!",
+                            ], 422);
+                        }
+
+                        $responseBg = Http::post("{$api_url}?WB={$wb}", [
+                            "open" => $open_gate,
+                            "close" => $close_gate,
+                            "mode" => ($wb_condition == "short" ? 'openbypass' : ($wb_condition == "long" ? 'teramode' : ($close_gate ? 'forceclose' : 'opennormal'))),
+                            "save" => $direction == 'manuver' && $wb_condition == "long" ? true : false,
+                            "manuver1862" => $direction == 'manuver1862' && $wb_condition == "short" ? true : false,
+                        ]);
+
+                        $dataBg = json_decode($responseBg);
+
+                        if ($dataBg->status == 'failed') {
+                            DB::rollback();
+                            return response()->json([
+                                'status' => 'error',
+                                'message'   => $dataBg->message,
+                            ], 422);
+                        }
+                        //END CEK TOKEN
+
                         $cek_rb->plant = $plant;
                         $cek_rb->sequence = $sequence;
                         $cek_rb->arrival_date = $arrival_date;
@@ -620,68 +670,72 @@ class BarierRealTimeController extends Controller
                         ];
                         $log->insert($log_arr);
 
+                        try {
+                            DB::commit();
+                            return response()->json([
+                                'status' => 'success',
+                                'message'   => "Data has been successfully updated, wb {$wb} barrier gate {$open_gate} is open!",
+                            ], 200);
+                        } finally {
+                            Http::post("{$api_url}/real-time", [
+                                'status'  => $next_status,
+                                'wb'  => $wb,
+                                'open_gate'  => $open_gate,
+                                'wb_condition'  => $wb_condition,
+                                'direction'  => $direction,
+                                'from'    => 'SAP',
+                                'truck_no' => !empty($truck_no) ? $truck_no : $cek_rb->truck_no,
+                                'antrian' => true,
+                                'data_antrian' => [$plant, $sequence, $arrival_date]
+                            ]);
+                        }
+                    } else {
                         // CEK TOKEN
-                        if ($token) {
-                            $get_token = TokenBarrierGate::first();
-                            if ($get_token) {
-                                $cek_token = Hash::check($token, $get_token->token);
-                                if ($cek_token) {
-                                    Http::post("{$api_url}?WB={$wb}", [
-                                        "open" => $open_gate,
-                                        "close" => $close_gate,
-                                        "mode" => ($wb_condition == "short" ? 'openbypass' : ($wb_condition == "long" ? 'teramode' : ($close_gate ? 'forceclose' : 'opennormal'))),
-                                        // "gandeng" => ($wb_condition == "short") ? 1
-                                        //     /** openbypass */
-                                        //     : 0,
-                                        // "manuver" => ($wb_condition == "long") ? 1
-                                        //     /** teramode */
-                                        //     /** jika close modenya forceclose selain itu open normal */
-                                        //     : 0,
-                                        "save" => $direction == 'manuver' && $wb_condition == "long" ? true : false,
-                                        "manuver1862" => $direction == 'manuver1862' && $wb_condition == "short" ? true : false,
-                                    ]);
-
-                                    try {
-                                        DB::commit();
-                                        return response()->json([
-                                            'status' => 'success',
-                                            'message'   => "Data has been successfully updated, wb {$wb} barrier gate {$open_gate} is open!",
-                                        ], 200);
-                                    } finally {
-                                        Http::post("{$api_url}/real-time", [
-                                            'status'  => $next_status,
-                                            'wb'  => $wb,
-                                            'open_gate'  => $open_gate,
-                                            'wb_condition'  => $wb_condition,
-                                            'direction'  => $direction,
-                                            'from'    => 'SAP',
-                                            'truck_no' => !empty($truck_no) ? $truck_no : $cek_rb->truck_no,
-                                            'antrian' => true,
-                                            'data_antrian' => [$plant, $sequence, $arrival_date]
-                                        ]);
-                                    }
-                                } else {
-                                    DB::rollback();
-                                    return response()->json([
-                                        'status' => 'error',
-                                        'message'   => "Token is invalid!",
-                                    ], 422);
-                                }
-                            } else {
-                                DB::rollback();
-                                return response()->json([
-                                    'status' => 'error',
-                                    'message'   => "Token has not been registered, please register the token first",
-                                ], 422);
-                            }
-                        } else {
+                        if (!$token) {
                             DB::rollback();
                             return response()->json([
                                 'status' => 'error',
-                                'message'   => "Token cannot be empty!",
+                                'message'   => "Token has not been registered, please register the token first",
                             ], 422);
                         }
-                    } else {
+
+                        $get_token = TokenBarrierGate::first();
+                        if (!$get_token) {
+                            DB::rollback();
+                            return response()->json([
+                                'status' => 'error',
+                                'message'   => "Token has not been registered, please register the token first",
+                            ], 422);
+                        }
+
+                        $cek_token = Hash::check($token, $get_token->token);
+                        if (!$cek_token) {
+                            DB::rollback();
+                            return response()->json([
+                                'status' => 'error',
+                                'message'   => "Token is invalid!",
+                            ], 422);
+                        }
+
+                        $responseBg = Http::post("{$api_url}?WB={$wb}", [
+                            "open" => $open_gate,
+                            "close" => $close_gate,
+                            "mode" => ($wb_condition == "short" ? 'openbypass' : ($wb_condition == "long" ? 'teramode' : ($close_gate ? 'forceclose' : 'opennormal'))),
+                            "save" => $direction == 'manuver' && $wb_condition == "long" ? true : false,
+                            "manuver1862" => $direction == 'manuver1862' && $wb_condition == "short" ? true : false,
+                        ]);
+
+                        $dataBg = json_decode($responseBg);
+
+                        if ($dataBg->status == 'failed') {
+                            DB::rollback();
+                            return response()->json([
+                                'status' => 'error',
+                                'message'   => $dataBg->message,
+                            ], 422);
+                        }
+                        //END CEK TOKEN
+
                         $cek_rb->plant = $plant;
                         $cek_rb->sequence = $sequence;
                         $cek_rb->arrival_date = $arrival_date;
@@ -851,59 +905,24 @@ class BarierRealTimeController extends Controller
                         $log->date_at = date('Y-m-d');
                         $log->save();
 
-                        // CEK TOKEN
-                        if ($token) {
-                            $get_token = TokenBarrierGate::first();
-                            if ($get_token) {
-                                $cek_token = Hash::check($token, $get_token->token);
-                                if ($cek_token) {
-                                    Http::post("{$api_url}?WB={$wb}", [
-                                        "open" => $open_gate,
-                                        "close" => $close_gate,
-                                        "mode" => ($wb_condition == "short" ? 'openbypass' : ($wb_condition == "long" ? 'teramode' : ($close_gate ? 'forceclose' : 'opennormal'))),
-                                        "save" => $direction == 'manuver' && $wb_condition == "long" ? true : false,
-                                        "manuver1862" => $direction == 'manuver1862' && $wb_condition == "short" ? true : false,
-                                    ]);
-
-                                    try {
-                                        DB::commit();
-                                        return response()->json([
-                                            'status' => 'success',
-                                            'message'   => "Data has been successfully updated, wb {$wb} barrier gate {$open_gate} is open!",
-                                        ], 200);
-                                    } finally {
-                                        Http::post("{$api_url}/real-time", [
-                                            'status'  => $next_status,
-                                            'wb'  => $wb,
-                                            'open_gate'  => $open_gate,
-                                            'wb_condition'  => $wb_condition,
-                                            'direction'  => $direction,
-                                            'from'    => 'SAP',
-                                            'truck_no' => !empty($truck_no) ? $truck_no : $cek_rb->truck_no,
-                                            'antrian' => true,
-                                            'data_antrian' => [$plant, $sequence, $arrival_date]
-                                        ]);
-                                    }
-                                } else {
-                                    DB::rollback();
-                                    return response()->json([
-                                        'status' => 'error',
-                                        'message'   => "Token is invalid!",
-                                    ], 422);
-                                }
-                            } else {
-                                DB::rollback();
-                                return response()->json([
-                                    'status' => 'error',
-                                    'message'   => "Token has not been registered, please register the token first",
-                                ], 422);
-                            }
-                        } else {
-                            DB::rollback();
+                        try {
+                            DB::commit();
                             return response()->json([
-                                'status' => 'error',
-                                'message'   => "Token cannot be empty!",
-                            ], 422);
+                                'status' => 'success',
+                                'message'   => "Data has been successfully updated, wb {$wb} barrier gate {$open_gate} is open!",
+                            ], 200);
+                        } finally {
+                            Http::post("{$api_url}/real-time", [
+                                'status'  => $next_status,
+                                'wb'  => $wb,
+                                'open_gate'  => $open_gate,
+                                'wb_condition'  => $wb_condition,
+                                'direction'  => $direction,
+                                'from'    => 'SAP',
+                                'truck_no' => !empty($truck_no) ? $truck_no : $cek_rb->truck_no,
+                                'antrian' => true,
+                                'data_antrian' => [$plant, $sequence, $arrival_date]
+                            ]);
                         }
                     }
                 } else {
