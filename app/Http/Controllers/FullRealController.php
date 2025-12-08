@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use DateTime;
 use App\Models\RealBarier;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
@@ -69,10 +70,24 @@ class FullRealController extends Controller
                     ->select('*');
             }
 
+            $totals = RealBarier::whereDate('created_at', today())
+                ->select('next_status', DB::raw('COUNT(*) as total'))
+                ->groupBy('next_status')
+                ->pluck('total', 'next_status');
+
+            $registration = $totals['registration'] ?? 0;
+            $on_process   = $totals['on process'] ?? 0;
+            $completed    = $totals['completed'] ?? 0;
+
             // $bg = RealBarier::with('track')
             // ->orderBy('id', 'DESC')->select('*');
 
             return DataTables::of($bg)
+                ->with([
+                    'total_regis'      => $registration,
+                    'total_on_process' => $on_process,
+                    'total_complete'   => $completed,
+                ])
                 ->addColumn('orders', function ($bg) {
                     $orders = null;
                     $do_no = $bg->delivery_order_no;

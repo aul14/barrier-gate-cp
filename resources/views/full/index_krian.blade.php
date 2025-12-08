@@ -10,7 +10,55 @@
     <div class="row mt-1 px-1">
         <div class="card">
             <div class="card-header p-0">
-                @if (!Request::is('full_table*'))
+                @if (Request::is('full_table*'))
+                    <div class="row">
+                        <div class="col-md-4 my-2 px-1">
+                            <div class="card bg-primary shadow h-100 py-2">
+                                <div class="card-body p-0 m-0">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col ms-2">
+                                            <h5 style="color: #fff; !important">Total Truck Registrasi</h5>
+
+                                            <h2 class="mb-0">
+                                                <label style="color: #fff; font-size: 2em;" id="lbl_regis">0</label>
+                                            </h2>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 my-2 px-1">
+                            <div class="card bg-danger shadow h-100 py-2">
+                                <div class="card-body p-0 m-0">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col ms-2">
+                                            <h5 style="color: #fff; !important">Total Truck On Process</h5>
+
+                                            <h2 class="mb-0">
+                                                <label style="color: #fff; font-size: 2em;" id="lbl_on_process">0</label>
+                                            </h2>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 my-2 px-1">
+                            <div class="card bg-success shadow h-100 py-2">
+                                <div class="card-body p-0 m-0">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col ms-2">
+                                            <h5 style="color: #fff; !important">Total Truck Complete</h5>
+
+                                            <h2 class="mb-0">
+                                                <label style="color: #fff; font-size: 2em;" id="lbl_complete">0</label>
+                                            </h2>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @else
                     <div class="row">
                         <div class="col-md-12">
                             <div class="row">
@@ -351,6 +399,13 @@
                     }],
                 });
 
+                table.on('xhr', function() {
+                    let json = table.ajax.json();
+
+                    $("#lbl_regis").text(json.total_regis);
+                    $("#lbl_on_process").text(json.total_on_process);
+                    $("#lbl_complete").text(json.total_complete);
+                });
                 // Auto next page
                 setInterval(function() {
                     var info = table.page.info();
