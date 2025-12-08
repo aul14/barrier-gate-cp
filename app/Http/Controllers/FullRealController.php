@@ -76,8 +76,8 @@ class FullRealController extends Controller
                 ->pluck('total', 'next_status');
 
             $registration = $totals['registration'] ?? 0;
-            $on_process   = $totals['on process'] ?? 0;
             $completed    = $totals['completed'] ?? 0;
+            $on_process   = $registration - $completed ?? 0;
 
             // $bg = RealBarier::with('track')
             // ->orderBy('id', 'DESC')->select('*');
