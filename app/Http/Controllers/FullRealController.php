@@ -75,9 +75,15 @@ class FullRealController extends Controller
                 ->groupBy('next_status')
                 ->pluck('total', 'next_status');
 
+            // ambil nilai masing-masing status (atau 0 jika tidak ada)
             $registration = $totals['registration'] ?? 0;
             $completed    = $totals['completed'] ?? 0;
-            $on_process   = $registration - $completed ?? 0;
+
+            // total semua status
+            $total_all = array_sum($totals->toArray());
+
+            // on process = semua status selain registration & completed
+            $on_process = $total_all - $registration - $completed;
 
             // $bg = RealBarier::with('track')
             // ->orderBy('id', 'DESC')->select('*');
