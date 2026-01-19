@@ -287,24 +287,24 @@ class BarierRealTimeController extends Controller
                     'message'   => 'Data has been successfully saved!',
                 ], 201);
             } finally {
-                Http::post("{$api_url}/real-time", [
-                    'status'  => $next_status,
-                    'from'    => 'SAP',
-                    'action'  => null,
-                    'antrian' => false,
-                    'data_antrian' => []
-                ]);
+                try {
+                    Http::timeout(3)->post("{$api_url}/real-time", [
+                        'status'  => $next_status,
+                        'from'    => 'SAP',
+                        'action'  => null,
+                        'antrian' => false,
+                        'data_antrian' => []
+                    ]);
 
-                $responseDoCollect = Http::withHeaders([
-                    'Token' => env('TOKEN_DO_COLLECT')
-                ])->post(env('ENDPOINT_DO_COLLECT'), $request->all());
-
-                Log::info('Response from DO Collect API:', ['response' => $responseDoCollect->json()]);
-
-                if ($responseDoCollect->successful()) {
-                    Log::info('Data successfully inserted.');
-                } else {
-                    Log::error('Failed to insert data.', ['status' => $responseDoCollect->status(), 'response' => $responseDoCollect->body()]);
+                    Http::timeout(3)
+                        ->withHeaders([
+                            'Token' => env('TOKEN_DO_COLLECT')
+                        ])
+                        ->post(env('ENDPOINT_DO_COLLECT'), $request->all());
+                } catch (\Throwable $e) {
+                    Log::error('External API failed', [
+                        'message' => $e->getMessage()
+                    ]);
                 }
             }
         } catch (QueryException $th) {
