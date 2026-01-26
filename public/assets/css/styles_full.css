@@ -561,9 +561,9 @@ table.my-tablejust tr td {
     text-transform: capitalize;
 }
 
-.my-tablejust tbody tr td {
+/* .my-tablejust tbody tr td {
     text-transform: uppercase;
-}
+} */
 
 
 .my-tablejust tbody td {
